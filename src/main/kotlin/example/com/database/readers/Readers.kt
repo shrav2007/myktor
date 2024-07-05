@@ -2,20 +2,21 @@ package example.com.database.readers
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.*
 
 object Readers : Table("readers") {
-    private val id = Readers.text("id")
-    private val name = Readers.text("name")
-    private val password = Readers.text("password")
-    private val phone = Readers.text("phone")
-    private val email = Readers.text("email")
+    val readerId = Readers.uuid("id")
+    val name = Readers.text("name")
+    val password = Readers.text("password")
+    val phone = Readers.text("phone")
+    val email = Readers.text("email")
 
     fun insert(readersDTO: ReadersDTO) {
         transaction {
             Readers.insert {
-                it[id] = readersDTO.id
+                it[readerId] = UUID.fromString(readersDTO.readerId)
                 it[name] = readersDTO.name
                 it[password] = readersDTO.password
                 it[phone] = readersDTO.phone
@@ -24,20 +25,22 @@ object Readers : Table("readers") {
         }
     }
 
-    fun fetchReader(login: String): ReadersDTO? {
+    fun fetchReaders(): List<ReadersDTO> {
         return try {
             transaction {
-                val readerModel = Readers.select { Readers.name.eq(login) }.single()
-                ReadersDTO(
-                    id = readerModel[Readers.id],
-                    password = readerModel[password],
-                    name = readerModel[name],
-                    phone = readerModel[phone],
-                    email = readerModel[email]
-                )
+                Readers.selectAll().toList()
+                    .map {
+                        ReadersDTO(
+                            readerId = it[readerId].toString(),
+                            password = it[password],
+                            name = it[name],
+                            phone = it[phone],
+                            email = it[email]
+                        )
+                    }
             }
         } catch (e: Exception) {
-            null
+            emptyList()
         }
     }
 }

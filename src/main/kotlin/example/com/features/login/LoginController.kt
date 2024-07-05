@@ -12,7 +12,7 @@ import java.util.*
 class LoginController(private val call: ApplicationCall) {
     suspend fun performLogin() {
         val receive = call.receive<LoginReceiveRemote>()
-        val userDTO = Users.fetchUser(receive.login)
+        val userDTO = Users.fetchUsers(receive.login)
 
         if (userDTO == null) {
             call.respond(HttpStatusCode.BadRequest, "User  not found")

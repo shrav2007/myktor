@@ -1,8 +1,8 @@
-package example.com.features.books
+package example.com.features.readers
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FetchBooksRequest(
+data class FetchReadersRequest(
     val searchQuery: String
 )

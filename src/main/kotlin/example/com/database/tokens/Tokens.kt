@@ -10,7 +10,6 @@ object Tokens : Table("tokens") {
     private val login = Tokens.text("login")
     private val token = Tokens.text("token")
 
-
     fun insert(tokenDTO: TokenDTO) {
         transaction {
             Tokens.insert {

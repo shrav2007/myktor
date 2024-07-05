@@ -2,6 +2,7 @@ package example.com
 
 import example.com.features.books.configureBooksRouting
 import example.com.features.login.configureLoginRouting
+import example.com.features.readers.configureReadersRouting
 import example.com.features.register.configureRegisterRouting
 import example.com.plugins.configureSerialization
 import io.ktor.server.application.*
@@ -27,4 +28,5 @@ fun Application.module() {
     configureLoginRouting()
     configureRegisterRouting()
     configureBooksRouting()
+    configureReadersRouting()
 }

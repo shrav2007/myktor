@@ -1,7 +1,7 @@
 package example.com.database.readers
 
 class ReadersDTO (
-    val id: String,
+    val readerId: String,
     val name: String,
     val password: String,
     val phone: String,

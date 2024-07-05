@@ -18,7 +18,7 @@ class RegisterController(private val call: ApplicationCall) {
             call.respond(HttpStatusCode.BadRequest, "Email is not valid")
         }
 
-        val userDTO = Users.fetchUser(registerReceiveRemote.login)
+        val userDTO = Users.fetchUsers(registerReceiveRemote.login)
 
         if (userDTO != null) {
             call.respond(HttpStatusCode.Conflict, "User already exists")

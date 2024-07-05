@@ -23,7 +23,6 @@ object Books : Table("books") {
         }
     }
 
-
     fun fetchBooks(): List<BooksDTO> {
         return try {
             transaction {
