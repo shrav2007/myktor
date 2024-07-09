@@ -1,6 +1,5 @@
 package example.com.features.register
 
-
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -11,4 +10,11 @@ fun Application.configureRegisterRouting() {
             registerController.registerNewUser()
         }
     }
+    routing {
+        delete("/delete") {
+            val registerController = RegisterController(call)
+            registerController.deleteUser()
+        }
+    }
 }
+

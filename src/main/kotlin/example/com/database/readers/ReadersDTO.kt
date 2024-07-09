@@ -1,5 +1,8 @@
 package example.com.database.readers
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class ReadersDTO (
     val readerId: String,
     val name: String,

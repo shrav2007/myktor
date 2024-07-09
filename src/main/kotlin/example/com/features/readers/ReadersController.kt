@@ -15,6 +15,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 class ReadersController(private val call: ApplicationCall) {
+
     suspend fun addNewReader() {
         val request = call.receive<CreateReadersRequest>()
         val token = call.request.headers["Bearer-Authorization"]

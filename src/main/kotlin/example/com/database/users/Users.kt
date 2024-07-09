@@ -6,10 +6,10 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Users : Table("users") {
-    private val login = Users.text("login")
-    private val password = Users.text("password")
-    private val username = Users.text("username")
-    private val email = Users.text("email")
+    val login = Users.text("login")
+    val password = Users.text("password")
+    val username = Users.text("username")
+    val email = Users.text("email")
 
     fun insert(userDTO: UserDTO) {
         transaction {

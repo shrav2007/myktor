@@ -10,5 +10,7 @@ data class RegisterReceiveRemote (
 )
 @Serializable
 data class RegisterResponseRemote (
-    val token: String
+    val login: String,
+    val email: String,
+    val password: String
 )
