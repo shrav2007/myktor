@@ -2,7 +2,6 @@ package example.com.features.readers
 
 import example.com.database.readers.Readers
 import example.com.database.readers.Readers.fetchReaders
-import example.com.database.readers.Readers.readerId
 import example.com.database.readers.ReadersDTO
 import example.com.utils.TokenCheck
 import io.ktor.http.*
@@ -65,11 +64,17 @@ class ReadersController(private val call: ApplicationCall) {
         val request = call.receive<FetchReadersRequest>()
         val token = call.request.headers["Bearer-Authorization"]
 
+        var deleted = false
         if (TokenCheck.isTokenValid(token.orEmpty())) {
             transaction {
-                Readers.deleteWhere { readerId eq UUID.fromString(request.searchQuery) }
+                deleted = Readers.deleteWhere { readerId eq UUID.fromString(request.searchQuery) } != 0
             }
-            call.respond(ReadersResponseRemote(readerId = readerId.toString()))
+            if (deleted) {
+                call.respond(ReadersResponseRemote(readerId = request.searchQuery))
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Пользователь с таким ID не найден")
+
+            }
         } else {
             call.respond(HttpStatusCode.Unauthorized, "Token expired")
         }

@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 class RegisterController(private val call: ApplicationCall) {
+
     suspend fun registerNewUser() {
         val registerReceiveRemote = call.receive<RegisterReceiveRemote>()
         if (!registerReceiveRemote.email.isValidEmail()) {
@@ -42,18 +43,33 @@ class RegisterController(private val call: ApplicationCall) {
                     token = token
                 )
             )
-            call.respond(RegisterResponseRemote(login = registerReceiveRemote.login, email = registerReceiveRemote.email, password = registerReceiveRemote.password))
+            call.respond(
+                RegisterResponseRemote(
+                    login = registerReceiveRemote.login,
+                    email = registerReceiveRemote.email,
+                    password = registerReceiveRemote.password
+                )
+            )
         }
     }
+
     suspend fun deleteUser() {
         val request = call.receive<DeleteUserRequest>()
         val token = call.request.headers["Bearer-Authorization"]
+        var deleted = false
 
         if (TokenCheck.isTokenValid(token.orEmpty())) {
             transaction {
-                Users.deleteWhere { login eq request.login }
+                deleted = Users.deleteWhere { login eq request.login } != 0
             }
-            call.respond(DeleteUserResponse(login = request.login))
+            if (deleted) {
+                transaction {
+                    Tokens.deleteWhere { login eq request.login }
+                }
+                call.respond(DeleteUserResponse(login = request.login))
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Юзер с таким ID не найден")
+            }
         } else {
             call.respond(HttpStatusCode.Unauthorized, "Token expired")
         }

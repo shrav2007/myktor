@@ -2,7 +2,6 @@ package example.com.features.books
 
 import example.com.database.books.Books
 import example.com.database.books.Books.fetchBooks
-import example.com.database.books.Books.id
 import example.com.database.books.BooksDTO
 import example.com.utils.TokenCheck
 import io.ktor.http.*
@@ -62,12 +61,17 @@ class BooksController(private val call: ApplicationCall) {
     suspend fun deleteBook() {
         val request = call.receive<FetchBooksRequest>()
         val token = call.request.headers["Bearer-Authorization"]
+        var deleted = false
 
         if (TokenCheck.isTokenValid(token.orEmpty())) {
             transaction {
-                Books.deleteWhere { nameOfBook eq request.searchQuery }
+                deleted = Books.deleteWhere { nameOfBook eq request.searchQuery } != 0
             }
-            call.respond(BooksResponseRemote(id = id.toString()))
+            if (deleted)
+                call.respond(DeleteBookResponseRemote(nameOfBook = request.searchQuery))
+            else {
+                call.respond(HttpStatusCode.NotFound, "Книга с таким ID не найдена")
+            }
         } else {
             call.respond(HttpStatusCode.Unauthorized, "Token expired")
         }

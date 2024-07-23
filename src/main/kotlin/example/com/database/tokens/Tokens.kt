@@ -6,9 +6,9 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Tokens : Table("tokens") {
-    private val id = Tokens.text("id")
-    private val login = Tokens.text("login")
-    private val token = Tokens.text("token")
+    val id = Tokens.text("id")
+    val login = Tokens.text("login")
+    val token = Tokens.text("token")
 
     fun insert(tokenDTO: TokenDTO) {
         transaction {
@@ -28,8 +28,8 @@ object Tokens : Table("tokens") {
                     .map {
                         TokenDTO(
                             rowId = it[Tokens.id],
-                            token = it[Tokens.token],
-                            login = it[Tokens.login]
+                            token = it[token],
+                            login = it[login]
                         )
                     }
             }

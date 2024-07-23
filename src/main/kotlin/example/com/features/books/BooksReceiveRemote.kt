@@ -10,6 +10,11 @@ data class BooksReceiveRemote(
 )
 
 @Serializable
+data class DeleteBookResponseRemote(
+    val nameOfBook: String
+)
+
+@Serializable
 data class BooksResponseRemote(
     val id: String
 )
